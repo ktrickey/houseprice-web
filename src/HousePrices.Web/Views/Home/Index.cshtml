@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row" style="margin-top: 20%;margin-bottom: 10%">
+	<div class="col-md-2">
+
+	</div>
+	<div class="col-md-8">
+		@using (Html.BeginForm("SearchResults","Home"))
+		{
+			<div class="input-group">
+
+				<input name="postcode" type="text" class="form-control" placeholder="Enter postcode" />
+
+				<span class="input-group-btn">
+					<button class="btn btn-primary" type="submit">Search!</button>
+
+				</span>
+
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-md-4"></div>
+				<div class="col-md-1">Within</div>
+			<div class="col-md-3">
+				<div class="input-group">
+
+					<input name="radius" type="number" class="form-control" value="5" />
+					<span class="input-group-addon">KMs</span>
+				</div>
+			</div>
+			</div>
+		}
+			
+
+	</div>
+	<div class="col-md-2">
+
+	</div>
+		
+
+
+</div>
+
