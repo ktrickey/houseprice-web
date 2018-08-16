@@ -7,39 +7,44 @@
 
 	</div>
 	<div class="col-md-8">
-		@using (Html.BeginForm("SearchResults","Home"))
+		@using (Html.BeginForm("SearchResults", "Home", null, FormMethod.Get))
 		{
-			<div class="input-group">
-
-				<input name="postcode" type="text" class="form-control" placeholder="Enter postcode" />
-
-				<span class="input-group-btn">
-					<button class="btn btn-primary" type="submit">Search!</button>
-
-				</span>
-
-			</div>
-			<br/>
 			<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-1">Within</div>
-			<div class="col-md-3">
 				<div class="input-group">
 
-					<input name="radius" type="number" class="form-control" value="5" />
-					<span class="input-group-addon">KMs</span>
+					<input name="postcode" type="text" class="form-control" placeholder="Enter postcode" />
+
+					<span class="input-group-btn">
+						<button class="btn btn-primary" type="submit">Search!</button>
+
+					</span>
+
 				</div>
 			</div>
+				<br/>
+				<div class="row">
+					<div class="col-md-3"></div>
+					<div class="col-md-6">
+						<div class="form-inline">
+							<div class="form-group">
+								<label class="control-label" style="font-weight: normal !important" for="radius">Within</label>
+								<div class="input-group">
+							<input id="radius"  name="radius" type="number" class="form-control" value="5"/>
+									<span class="input-group-addon">KMs</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				}
+
+
 			</div>
-		}
-			
+			<div class="col-md-2">
 
-	</div>
-	<div class="col-md-2">
-
-	</div>
-		
+			</div>
 
 
-</div>
+
+		</div>
 

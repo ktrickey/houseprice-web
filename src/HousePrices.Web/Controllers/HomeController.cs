@@ -8,6 +8,10 @@ using HousePrices.Web.Models;
 
 namespace HousePrices.Web.Controllers
 {
+	public class Results
+	{
+		public string Postcode { get; set; }
+	}
 	public class HomeController : Controller
 	{
 		public IActionResult Index()
@@ -32,6 +36,20 @@ namespace HousePrices.Web.Controllers
 		public IActionResult Privacy()
 		{
 			return View();
+		}
+
+		public class SearchStructure
+		{
+			public string Postcode { get; set; }
+			public double Radius { get; set; }
+		}
+
+
+
+		[HttpGet]
+		public IActionResult SearchResults(SearchStructure search)
+		{
+			return View(new List<Results>(){new Results(){Postcode = "CB23 3NY"}});
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
