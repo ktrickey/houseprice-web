@@ -16,7 +16,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.Postcode)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransferDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PAON)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +36,18 @@
             <td>
                 @Html.ActionLink(item.Postcode, "View")
             </td>
-
+            <td>
+                @item.TransferDate.ToShortDateString()
+            </td>
+            <td>
+                @item.Price.ToString("N2")
+            </td>
+            <td>
+                @item.PAON
+            </td>
+            <td>
+                @item.Street
+            </td>
         </tr>
 }
     </tbody>
