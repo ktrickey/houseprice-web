@@ -1,5 +1,6 @@
-﻿@model IEnumerable<HousePrices.Web.Controllers.Results>
-
+﻿@using HousePrices.Web.Controllers
+@using Humanizer
+@model HousePrices.Web.Controllers.PagedResult<HousePrices.Web.Controllers.Results>
 @{
     ViewData["Title"] = "SearchResults";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,45 +11,4 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table table-striped">
-    <thead >
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Postcode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransferDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PAON)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Street)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.ActionLink(item.Postcode, "View")
-            </td>
-            <td>
-                @item.TransferDate.ToShortDateString()
-            </td>
-            <td>
-                @item.Price.ToString("N2")
-            </td>
-            <td>
-                @item.PAON
-            </td>
-            <td>
-                @item.Street
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@await Html.PartialAsync("TransactionList", Model.Results)

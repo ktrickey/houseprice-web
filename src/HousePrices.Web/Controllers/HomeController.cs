@@ -7,9 +7,16 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HousePrices.Web.Models;
+using Humanizer;
 
 namespace HousePrices.Web.Controllers
 {
+    public class PagedResult<T>
+    {
+
+        public long TotalRows { get; set; }
+        public IEnumerable<T> Results { get; set; }
+    }
 	public class Results
 	{
 		public double Price { get; set; }
@@ -65,10 +72,10 @@ namespace HousePrices.Web.Controllers
 		[HttpGet]
 		public IActionResult SearchResults(SearchStructure search)
 		{
-		    WebRequest request = WebRequest.Create ($"https://localhost:6001/api/transaction/{search.Postcode}/{search.Radius}");
+		    WebRequest request = WebRequest.Create ($"https://localhost:5001/api/transaction/{search.Postcode}/{search.Radius}");
 		    // If required by the server, set the credentials.
 		    request.Credentials = CredentialCache.DefaultCredentials;
-		
+		    //"STUFF".Humanize(LetterCasing.Sentence);
 		    // Get the response.
 		    HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
 		    // Display the status.
@@ -86,7 +93,7 @@ namespace HousePrices.Web.Controllers
 		    dataStream.Close ();
 		    response.Close ();
 
-			var stuff = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Results>>(responseFromServer);
+			var stuff = Newtonsoft.Json.JsonConvert.DeserializeObject<PagedResult<Results>>(responseFromServer);
 			return View(stuff);
 		}
 
