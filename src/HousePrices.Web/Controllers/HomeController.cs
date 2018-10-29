@@ -72,7 +72,7 @@ namespace HousePrices.Web.Controllers
 		[HttpGet]
 		public IActionResult SearchResults(SearchStructure search)
 		{
-		    WebRequest request = WebRequest.Create ($"https://localhost:5001/api/transaction/{search.Postcode}/{search.Radius}");
+		    WebRequest request = WebRequest.Create ($"https://housepriceapi/api/transaction/{search.Postcode}/{search.Radius}");
 		    // If required by the server, set the credentials.
 		    request.Credentials = CredentialCache.DefaultCredentials;
 		    //"STUFF".Humanize(LetterCasing.Sentence);
