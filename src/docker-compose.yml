@@ -1,0 +1,13 @@
+version: '3.4'
+networks:
+  houseprice:
+    driver: "bridge"
+services:
+  houseprices.web:
+    image: ${DOCKER_REGISTRY}housepricesweb
+    build:
+      context: .
+      dockerfile: HousePrices.Web/Dockerfile
+    networks:
+      - houseprice
+

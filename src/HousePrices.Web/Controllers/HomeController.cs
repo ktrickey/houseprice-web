@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HousePrices.Web.Models;
-using Humanizer;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace HousePrices.Web.Controllers
 {
@@ -37,6 +36,21 @@ namespace HousePrices.Web.Controllers
 	}
 	public class HomeController : Controller
 	{
+		private string _apiRoot;
+		public HomeController()
+		{
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(Directory.GetCurrentDirectory())
+				
+				.AddJsonFile("appsettings.json")
+				.AddEnvironmentVariables();
+
+			var configuration = builder.Build();
+
+
+			_apiRoot = configuration["ApiRoot"];
+			Log.Information($"ApiRoot = {_apiRoot}");
+		}
 		public IActionResult Index()
 		{
 			return View();
@@ -72,29 +86,41 @@ namespace HousePrices.Web.Controllers
 		[HttpGet]
 		public IActionResult SearchResults(SearchStructure search)
 		{
-		    WebRequest request = WebRequest.Create ($"https://localhost:5001/api/transaction/{search.Postcode}/{search.Radius}");
-		    // If required by the server, set the credentials.
-		    request.Credentials = CredentialCache.DefaultCredentials;
-		    //"STUFF".Humanize(LetterCasing.Sentence);
-		    // Get the response.
-		    HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
-		    // Display the status.
-		    Console.WriteLine (response.StatusDescription);
-		    // Get the stream containing content returned by the server.
-		    Stream dataStream = response.GetResponseStream ();
-		    // Open the stream using a StreamReader for easy access.
-		    StreamReader reader = new StreamReader (dataStream);
-		    // Read the content.
-		    string responseFromServer = reader.ReadToEnd ();
-		    // Display the content.
-		    Console.WriteLine (responseFromServer);
-		    // Cleanup the streams and the response.
-		    reader.Close ();
-		    dataStream.Close ();
-		    response.Close ();
+			var url = $"{_apiRoot}/api/transaction/{search.Postcode}/{search.Radius}";
+		
+			Log.Information($"accessing {url}");
+			try
+			{
 
-			var stuff = Newtonsoft.Json.JsonConvert.DeserializeObject<PagedResult<Results>>(responseFromServer);
-			return View(stuff);
+				WebRequest request = WebRequest.Create(url);
+				// If required by the server, set the credentials.
+				request.Credentials = CredentialCache.DefaultCredentials;
+				//"STUFF".Humanize(LetterCasing.Sentence);
+				// Get the response.
+				HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+				// Display the status.
+				Log.Information(response.StatusDescription);
+				// Get the stream containing content returned by the server.
+				Stream dataStream = response.GetResponseStream();
+				// Open the stream using a StreamReader for easy access.
+				StreamReader reader = new StreamReader(dataStream);
+				// Read the content.
+				string responseFromServer = reader.ReadToEnd();
+				// Display the content.
+				Console.WriteLine(responseFromServer);
+				// Cleanup the streams and the response.
+				reader.Close();
+				dataStream.Close();
+				response.Close();
+
+				var stuff = Newtonsoft.Json.JsonConvert.DeserializeObject<PagedResult<Results>>(responseFromServer);
+				return View(stuff);
+			}
+			catch (Exception ex)
+			{
+				Log.Information($"Error accessing {url}:{ex.Message}");
+				throw;
+			}
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
