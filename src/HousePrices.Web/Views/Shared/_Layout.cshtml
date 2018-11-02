@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.IO
+@using System.Net
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -7,7 +9,8 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+	    <link rel="stylesheet" href="~/css/site.css" />
+		<link rel="stylesheet" href="~/branding/site.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -40,13 +43,13 @@
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - HousePrices.Web</p>
-        </footer>
-    </div>
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; 2018 - HousePrices.Web</p>
+		</footer>
+	</div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

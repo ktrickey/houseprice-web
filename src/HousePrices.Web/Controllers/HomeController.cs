@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using HousePrices.Web.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -37,7 +38,7 @@ namespace HousePrices.Web.Controllers
 	public class HomeController : Controller
 	{
 		private string _apiRoot;
-		public HomeController()
+		public HomeController(IHostingEnvironment env)
 		{
 			var builder = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
@@ -50,6 +51,9 @@ namespace HousePrices.Web.Controllers
 
 			_apiRoot = configuration["ApiRoot"];
 			Log.Information($"ApiRoot = {_apiRoot}");
+
+			Log.Information($"Web root path:{env.WebRootPath}, Content root path:{env.ContentRootPath}");
+			this.ViewBag.mappedPath = env.WebRootPath;
 		}
 		public IActionResult Index()
 		{
