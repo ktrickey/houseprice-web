@@ -1,0 +1,9 @@
+# Top-most EditorConfig file
+root = true
+
+# Tab indentation
+[{*.cs, *.cshtml}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
