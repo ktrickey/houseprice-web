@@ -37,18 +37,9 @@ namespace HousePrices.Web.Controllers
     }
     public class HomeController : Controller
     {
-        private string _apiRoot;
-        public HomeController(IHostingEnvironment env)
+        private readonly string _apiRoot;
+        public HomeController(IHostingEnvironment env, IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
-
-            var configuration = builder.Build();
-
-
             _apiRoot = configuration["ApiRoot"];
             Log.Information($"ApiRoot = {_apiRoot}");
 
