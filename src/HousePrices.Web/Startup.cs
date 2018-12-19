@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using HousePrices.Web.Factories;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RestSharp;
 
 namespace HousePrices.Web
 {
@@ -11,7 +13,6 @@ namespace HousePrices.Web
     {
         public Startup(IHostingEnvironment env)
         {
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -33,6 +34,8 @@ namespace HousePrices.Web
             });
 
             services.AddSingleton(_configuration);
+            services.AddScoped<IRestClientFactory, RestClientFactory>();
+            services.AddScoped<IRestRequestFactory, RestRequestFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

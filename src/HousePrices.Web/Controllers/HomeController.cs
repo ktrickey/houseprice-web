@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using HousePrices.Web.Factories;
 using Microsoft.AspNetCore.Mvc;
 using HousePrices.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using RestSharp;
 using Serilog;
 
 namespace HousePrices.Web.Controllers
@@ -37,10 +39,17 @@ namespace HousePrices.Web.Controllers
     }
     public class HomeController : Controller
     {
+        private readonly IRestClientFactory _restClient;
+        private readonly IRestRequestFactory _request;
         private readonly string _apiRoot;
-        public HomeController(IHostingEnvironment env, IConfiguration configuration)
+
+        public HomeController(IHostingEnvironment env, IConfiguration configuration, IRestClientFactory restClient, IRestRequestFactory request)
         {
+            _restClient = restClient;
+            _request = request;
+
             _apiRoot = configuration["ApiRoot"];
+
             Log.Information($"ApiRoot = {_apiRoot}");
 
             Log.Information($"Web root path:{env.WebRootPath}, Content root path:{env.ContentRootPath}");
@@ -79,34 +88,24 @@ namespace HousePrices.Web.Controllers
         [HttpGet]
         public IActionResult SearchResults(SearchStructure search)
         {
-            var url = $"{_apiRoot}/api/transaction/{search.Postcode}/{search.Radius}";
+            var url = $"{_apiRoot}/api/transaction/";
+
+            var client = _restClient.Create($"{_apiRoot}/api/transaction/");
+            var request = _request.Create($"{search.Postcode}/{search.Radius}", Method.GET);
 
             Log.Information($"accessing {url}");
             try
             {
 
-                WebRequest request = WebRequest.Create(url);
-                // If required by the server, set the credentials.
                 request.Credentials = CredentialCache.DefaultCredentials;
-                //"STUFF".Humanize(LetterCasing.Sentence);
-                // Get the response.
-                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+                var response = client.Execute<PagedResult<Results>>(request);
+
                 // Display the status.
                 Log.Information(response.StatusDescription);
-                // Get the stream containing content returned by the server.
-                Stream dataStream = response.GetResponseStream();
-                // Open the stream using a StreamReader for easy access.
-                StreamReader reader = new StreamReader(dataStream);
-                // Read the content.
-                string responseFromServer = reader.ReadToEnd();
-                // Display the content.
-                Console.WriteLine(responseFromServer);
-                // Cleanup the streams and the response.
-                reader.Close();
-                dataStream.Close();
-                response.Close();
 
-                var stuff = Newtonsoft.Json.JsonConvert.DeserializeObject<PagedResult<Results>>(responseFromServer);
+
+                var stuff = response.Data;
                 return View(stuff);
             }
             catch (Exception ex)
