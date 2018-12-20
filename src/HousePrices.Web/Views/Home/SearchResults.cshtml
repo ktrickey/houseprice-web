@@ -1,6 +1,6 @@
 ﻿@using HousePrices.Web.Controllers
 @using Humanizer
-@model HousePrices.Web.Controllers.PagedResult<HousePrices.Web.Controllers.Results>
+@model SearchResults
 @{
     ViewData["Title"] = "SearchResults";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,4 +8,4 @@
 
 <h2>SearchResults</h2>
 
-@await Html.PartialAsync("TransactionList", Model.Results)
+@await Html.PartialAsync("TransactionList", Model)

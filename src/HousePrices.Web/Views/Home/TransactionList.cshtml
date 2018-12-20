@@ -1,51 +1,5 @@
-﻿@using Humanizer
-@model IEnumerable<HousePrices.Web.Controllers.Results>
+﻿@model SearchResults
 <table class="table table-striped">
-    <thead>
-        <tr>
-                 <th>
-                    @Html.DisplayNameFor(model => model.Postcode)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TransferDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PAON)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Street)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Locality)
-                </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Postcode
-                </td>
-                <td>
-                    @item.TransferDate.ToShortDateString()
-                </td>
-                <td>
-                    @item.Price.ToString("N2")
-                </td>
-                <td>
-                    @item.PAON
-                </td>
-                <td>
-                    @item.Street.Transform(To.LowerCase).Transform(To.TitleCase)
-                </td>
-                <td>
-                    @item.Locality.Transform(To.LowerCase).Transform(To.TitleCase)
-                </td>
-            </tr>
-        }
-    </tbody>
+    <partial name="TransactionListHeader" for="@Model.Transactions.Results" />
+    <partial name="TransactionListBody" for="@Model.Transactions.Results"/>
 </table>

@@ -1,0 +1,28 @@
+@using Humanizer
+@model IEnumerable<HousePrices.Web.Controllers.Results>
+
+<tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Postcode
+                </td>
+                <td>
+                    @item.TransferDate.ToShortDateString()
+                </td>
+                <td>
+                    @item.Price.ToString("N2")
+                </td>
+                <td>
+                    @item.PAON
+                </td>
+                <td>
+                    @item.Street.Transform(To.LowerCase).Transform(To.TitleCase)
+                </td>
+                <td>
+                    @item.Locality.Transform(To.LowerCase).Transform(To.TitleCase)
+                </td>
+            </tr>
+        }
+    </tbody>

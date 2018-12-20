@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RestSharp;
 
 namespace HousePrices.Web
 {
@@ -34,8 +33,7 @@ namespace HousePrices.Web
             });
 
             services.AddSingleton(_configuration);
-            services.AddScoped<IRestClientFactory, RestClientFactory>();
-            services.AddScoped<IRestRequestFactory, RestRequestFactory>();
+            services.AddScoped<IRestFactory, RestFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using HousePrices.Web.Factories;
 using Microsoft.AspNetCore.Mvc;
 using HousePrices.Web.Models;
@@ -37,18 +37,22 @@ namespace HousePrices.Web.Controllers
         public string CategoryType { get; set; }
         public string Status { get; set; }
     }
+
+
+
     public class HomeController : Controller
     {
-        private readonly IRestClientFactory _restClient;
-        private readonly IRestRequestFactory _request;
+        private readonly IRestFactory _restFactory;
         private readonly string _apiRoot;
+        private readonly string _clientRoot;
 
-        public HomeController(IHostingEnvironment env, IConfiguration configuration, IRestClientFactory restClient, IRestRequestFactory request)
+        public HomeController(IHostingEnvironment env, IConfiguration configuration, IRestFactory restFactory)
         {
-            _restClient = restClient;
-            _request = request;
+            _restFactory = restFactory;
 
             _apiRoot = configuration["ApiRoot"];
+
+            _clientRoot = $"{_apiRoot}/api/transaction/";
 
             Log.Information($"ApiRoot = {_apiRoot}");
 
@@ -57,6 +61,7 @@ namespace HousePrices.Web.Controllers
         }
         public IActionResult Index()
         {
+
             return View();
         }
 
@@ -86,31 +91,36 @@ namespace HousePrices.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchResults(SearchStructure search)
+        public async Task<IActionResult> SearchResults(SearchStructure search)
         {
-            var url = $"{_apiRoot}/api/transaction/";
 
-            var client = _restClient.Create($"{_apiRoot}/api/transaction/");
-            var request = _request.Create($"{search.Postcode}/{search.Radius}", Method.GET);
+            var client = _restFactory.CreateClient(_clientRoot);
+            var searchRequest = _restFactory.CreateRequest($"{search.Postcode}/{search.Radius}", Method.GET);
 
-            Log.Information($"accessing {url}");
+            var yearRequest = _restFactory.CreateRequest("years", Method.GET);
+
+
+
+
+            Log.Information($"accessing {_clientRoot}");
             try
             {
 
-                request.Credentials = CredentialCache.DefaultCredentials;
+                searchRequest.Credentials = CredentialCache.DefaultCredentials;
 
-                var response = client.Execute<PagedResult<Results>>(request);
+                var response = await client.ExecuteTaskAsync<PagedResult<Results>>(searchRequest);
+                var yearsResponse = await client.ExecuteTaskAsync<int[]>(yearRequest);
 
                 // Display the status.
                 Log.Information(response.StatusDescription);
 
 
                 var stuff = response.Data;
-                return View(stuff);
+                return View(new SearchResults(stuff, yearsResponse.Data));
             }
             catch (Exception ex)
             {
-                Log.Information($"Error accessing {url}:{ex.Message}");
+                Log.Information($"Error accessing {_clientRoot}:{ex.Message}");
                 throw;
             }
         }
